@@ -15,9 +15,9 @@ bib.imprimir_artigos()
 bib.publicar_artigo(artigo1, Tema.COMPUTACAO)
 bib.publicar_artigo(artigo2, Tema.FISICA)
 
-bib.imprimir_artigos()
 
 try:
+    bib.publicar_artigo(artigo1, Tema.MATEMATICA)
     bib.publicar_artigo(artigo1, Tema.COMPUTACAO)
 except ValueError as erro:
     print(erro)
@@ -27,3 +27,4 @@ try:
 except ValueError as erro:
     print(erro)
 
+bib.imprimir_artigos()
