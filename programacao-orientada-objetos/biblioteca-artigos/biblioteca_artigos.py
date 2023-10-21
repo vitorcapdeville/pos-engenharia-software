@@ -1,3 +1,6 @@
+from enum import Enum
+
+
 class Autor:
     def __init__(self, nome_completo: str, nome_citacao: str, afiliacao: str) -> None:
         self._nome_completo = nome_completo
@@ -61,31 +64,39 @@ class Artigo:
             return False
         return (
             self._titulo == other.titulo
-            and all([este == outro for este, outro in zip(self._autores, other.autores)])
+            and all(
+                [este == outro for este, outro in zip(self._autores, other.autores)]
+            )
             and self._ano_publicacao == other.ano_publicacao
         )
 
 
+class Tema(Enum):
+    COMPUTACAO = "Computação"
+    FISICA = "Física"
+    MATEMATICA = "Matemática"
+
+
+def imprimir_artigos(artigos: list[Artigo], tema: Tema) -> None:
+    if len(artigos) == 0:
+        print(f"=== Nenhum artigo publicado sob o tema '{tema.value}'.")
+        return
+
+    print(f"=== Artigos publicados com o tema '{tema.value}':")
+    for artigo in artigos:
+        print("  * ", end="")
+        print(artigo)
+
 class Biblioteca:
     def __init__(self) -> None:
-        self._artigos = []
+        self._artigos = {Tema.COMPUTACAO: [], Tema.FISICA: [], Tema.MATEMATICA: []}
 
-    def publicar_artigo(self, artigo: Artigo) -> None:
-        if self._artigos.count(artigo) != 0:
-            raise ValueError(f"O artigo '{artigo.titulo}' já existe nesta biblioteca.")
-        self._artigos.append(artigo)
-        print(f"*** Artigo '{artigo.titulo}' publicado com sucesso!")
+    def publicar_artigo(self, artigo: Artigo, tema: Tema) -> None:
+        if self._artigos[tema].count(artigo) != 0:
+            raise ValueError(f"O artigo '{artigo.titulo}' já existe nesta biblioteca sob o tema {tema.value}.")
+        self._artigos[tema].append(artigo)
+        print(f"*** Artigo '{artigo.titulo}' publicado com sucesso sob o tema '{tema.value}'!")
 
     def imprimir_artigos(self) -> None:
-        if len(self._artigos) == 0:
-            print("=== Nenhum artigo publicado.")
-            return
-
-        print("=== Artigos publicados:")
-        for artigo in self._artigos:
-            print("  * ", end="")
-            print(artigo)
-
-# Incluir o atributo tema e crie várias bibliotecas temáticas.
-# OU
-# Criar categorias dentro da mesma biblioteca.
+        for tema in self._artigos.keys():
+            imprimir_artigos(self._artigos[tema], tema)

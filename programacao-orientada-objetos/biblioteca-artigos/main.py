@@ -1,4 +1,4 @@
-from biblioteca_artigos import Autor, Biblioteca
+from biblioteca_artigos import Autor, Biblioteca, Tema
 from biblioteca_artigos import Artigo
 
 bib = Biblioteca()
@@ -12,13 +12,13 @@ artigo2 = Artigo("Um artigo com um nome maior ainda", [fdias, jsilva], 2023)
 
 bib.imprimir_artigos()
 
-bib.publicar_artigo(artigo1)
-bib.publicar_artigo(artigo2)
+bib.publicar_artigo(artigo1, Tema.COMPUTACAO)
+bib.publicar_artigo(artigo2, Tema.FISICA)
 
 bib.imprimir_artigos()
 
 try:
-    bib.publicar_artigo(artigo1)
+    bib.publicar_artigo(artigo1, Tema.COMPUTACAO)
 except ValueError as erro:
     print(erro)
 
