@@ -77,26 +77,48 @@ class Tema(Enum):
     MATEMATICA = "Matemática"
 
 
-def imprimir_artigos(artigos: list[Artigo], tema: Tema) -> None:
-    if len(artigos) == 0:
-        print(f"=== Nenhum artigo publicado sob o tema '{tema.value}'.")
-        return
+class BibliotecaInterface:
+    def __init__(self) -> None:
+        self._artigos = []
 
-    print(f"=== Artigos publicados com o tema '{tema.value}':")
-    for artigo in artigos:
-        print("  * ", end="")
-        print(artigo)
+    def publicar_artigo(self, artigo: Artigo) -> None:
+        if self._artigos.count(artigo) != 0:
+            raise ValueError(f"O artigo '{artigo.titulo}' já existe nesta biblioteca.")
+        self._artigos.append(artigo)
+        print(f"*** Artigo '{artigo.titulo}' publicado com sucesso!")
+
+    def imprimir_artigos(self) -> None:
+        if len(self._artigos) == 0:
+            print("=== Nenhum artigo publicado.")
+            return
+
+        print("=== Artigos publicados:")
+        for artigo in self._artigos:
+            print("  * ", end="")
+            print(artigo)
+
+class BibliotecaMatematica(BibliotecaInterface):
+    pass
+
+class BibliotecaFisica(BibliotecaInterface):
+    pass
+
+class BibliotecaComputacao(BibliotecaInterface):
+    pass
 
 class Biblioteca:
     def __init__(self) -> None:
-        self._artigos = {Tema.COMPUTACAO: [], Tema.FISICA: [], Tema.MATEMATICA: []}
+        self._bibliotecas = {
+            Tema.COMPUTACAO: BibliotecaComputacao(),
+            Tema.FISICA: BibliotecaFisica(),
+            Tema.MATEMATICA: BibliotecaMatematica(),
+        }
 
     def publicar_artigo(self, artigo: Artigo, tema: Tema) -> None:
-        if self._artigos[tema].count(artigo) != 0:
-            raise ValueError(f"O artigo '{artigo.titulo}' já existe nesta biblioteca sob o tema {tema.value}.")
-        self._artigos[tema].append(artigo)
-        print(f"*** Artigo '{artigo.titulo}' publicado com sucesso sob o tema '{tema.value}'!")
+        self._bibliotecas[tema].publicar_artigo(artigo)
 
     def imprimir_artigos(self) -> None:
-        for tema in self._artigos.keys():
-            imprimir_artigos(self._artigos[tema], tema)
+        for tema, biblioteca in self._bibliotecas.items():
+            print(f"=== Artigos publicados sobre {tema.value}:")
+            biblioteca.imprimir_artigos()
+            print()
