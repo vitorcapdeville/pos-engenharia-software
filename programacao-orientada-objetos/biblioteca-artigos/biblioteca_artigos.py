@@ -97,14 +97,18 @@ class BibliotecaInterface:
             print("  * ", end="")
             print(artigo)
 
+
 class BibliotecaMatematica(BibliotecaInterface):
     pass
+
 
 class BibliotecaFisica(BibliotecaInterface):
     pass
 
+
 class BibliotecaComputacao(BibliotecaInterface):
     pass
+
 
 class Biblioteca:
     def __init__(self) -> None:

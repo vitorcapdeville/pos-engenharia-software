@@ -8,7 +8,6 @@ fdias = Autor("Fátima Dias", "DIAS, F.", "UFF")
 
 artigo1 = Artigo("Um artigo com um nome grande", [jsilva], 2021)
 artigo2 = Artigo("Um artigo com um nome maior ainda", [fdias, jsilva], 2023)
-# Impedir que um artigo tenha autores repetidos.
 
 bib.imprimir_artigos()
 
@@ -23,7 +22,14 @@ except ValueError as erro:
     print(erro)
 
 try:
-    Artigo("Um artigo com um nome maior ainda", [Autor("Fátima Dias", "DIAS, F.", "UFF"), Autor("Fátima Dias", "DIAS, F.", "UFF")], 2023)
+    Artigo(
+        "Um artigo com um nome maior ainda",
+        [
+            Autor("Fátima Dias", "DIAS, F.", "UFF"),
+            Autor("Fátima Dias", "DIAS, F.", "UFF"),
+        ],
+        2023,
+    )
 except ValueError as erro:
     print(erro)
 
