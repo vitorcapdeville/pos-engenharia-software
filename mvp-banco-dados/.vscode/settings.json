@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "seguros",
+            "database": "${workspaceFolder:mvp-banco-dados}/seguros.sqlite"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

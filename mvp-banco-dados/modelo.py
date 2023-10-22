@@ -1,5 +1,5 @@
 from datetime import date
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, ForeignKeyConstraint, String
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -30,7 +30,6 @@ class Tabua(Base):
 
 
 class Juros(Base):
-    
     __tablename__ = "juros"
     jurosId: Mapped[int] = mapped_column(primary_key=True)
     juros: Mapped[float]
@@ -38,19 +37,17 @@ class Juros(Base):
 
 class ProdutoTabua(Base):
     __tablename__ = "produtotabua"
-    produtoTabuaId: Mapped[int] = mapped_column(primary_key=True)
-    produtoId: Mapped[int] = mapped_column(ForeignKey("produto.produtoId"))
+    produtoId: Mapped[int] = mapped_column(ForeignKey("produto.produtoId"), primary_key=True)
+    sexo: Mapped[str] = mapped_column(String(1), primary_key=True)
     tabuaId: Mapped[int] = mapped_column(ForeignKey("tabua.tabuaId"))
-    sexo: Mapped[str] = mapped_column(String(1))
 
 
-class ProdutoJuros(Base):
-    __tablename__ = "produtojuros"
-    produtoJurosId: Mapped[int] = mapped_column(primary_key=True)
-    produtoId: Mapped[int] = mapped_column(ForeignKey("produto.produtoId"))
+class ProdutoPrazo(Base):
+    __tablename__ = "produtoprazo"
+    produtoId: Mapped[int] = mapped_column(ForeignKey("produto.produtoId"), primary_key=True)
+    prazoPagamento: Mapped[int] = mapped_column(primary_key=True)
+    prazoCobertura: Mapped[int] = mapped_column(primary_key=True)
     jurosId: Mapped[int] = mapped_column(ForeignKey("juros.jurosId"))
-    prazoPagamento: Mapped[int]
-
 
 
 class Matricula(Base):
@@ -60,5 +57,13 @@ class Matricula(Base):
     produtoId: Mapped[int] = mapped_column(ForeignKey("produto.produtoId"))
     dataAssinatura: Mapped[date]
     dataInicioVigencia: Mapped[date]
-    prazoCobertura: Mapped[int]
-    prazoPagamento: Mapped[int]
+    prazoPagamento: Mapped[int] = mapped_column()
+    prazoCobertura: Mapped[int] = mapped_column()
+
+    __table_args__ = (
+        ForeignKeyConstraint(
+            [produtoId, prazoPagamento, prazoCobertura],
+            [ProdutoPrazo.produtoId, ProdutoPrazo.prazoPagamento, ProdutoPrazo.prazoCobertura],
+        ),
+    )
+    

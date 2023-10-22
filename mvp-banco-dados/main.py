@@ -3,12 +3,12 @@ from sqlalchemy import create_engine, select, text
 from sqlalchemy.orm import Session
 from modelo import (
     Base,
+    ProdutoPrazo,
     Segurado,
     Produto,
     Tabua,
     Juros,
     ProdutoTabua,
-    ProdutoJuros,
     Matricula,
 )
 
@@ -29,47 +29,75 @@ Base.metadata.create_all(engine)
 
 with Session(engine) as session:
     segurado = Segurado(cpf=12345678900, sexo="M", dataNascimento=date(1990, 1, 1))
-    produto = Produto(produtoId=1, nome="Peculio por morte")
+    
+    produtos = [
+        Produto(produtoId=1, nome="Peculio por morte"),
+        Produto(produtoId=2, nome="Outro peculio por morte")
+    ]
 
-    tabua1 = Tabua(tabuaId=1, nome="AT-2000", tipo="Morte")
+    tabuas = [
+        Tabua(tabuaId=1, nome="AT-2000", tipo="Morte"),
+        Tabua(tabuaId=2, nome="BREMS MT M", tipo="Morte"),
+        Tabua(tabuaId=3, nome="BREMS MT F", tipo="Morte")
+    ]
 
-    produto_tabua1 = ProdutoTabua(produtoTabuaId=1, produtoId=1, sexo = "M", tabuaId=1)
-    produto_tabua2 = ProdutoTabua(produtoTabuaId=2, produtoId=1, sexo = "F", tabuaId=1)
+    produto_tabua = [
+        ProdutoTabua(produtoId=1, sexo = "M", tabuaId=1),
+        ProdutoTabua(produtoId=1, sexo = "F", tabuaId=1),
+        ProdutoTabua(produtoId=2, sexo = "M", tabuaId=2),
+        ProdutoTabua(produtoId=2, sexo = "F", tabuaId=3),
+    ]
 
-    juros1 = Juros(jurosId=1, juros=0.02)
-    juros2 = Juros(jurosId=2, juros=0.04)
-    juros3 = Juros(jurosId=3, juros=0.06)
 
-    produto_juros1 = ProdutoJuros(produtoJurosId=1, prazoPagamento=10, produtoId=1, jurosId=1)
-    produto_juros2 = ProdutoJuros(produtoJurosId=2, prazoPagamento=20, produtoId=1, jurosId=2)
-    produto_juros3 = ProdutoJuros(produtoJurosId=3, prazoPagamento=30, produtoId=1, jurosId=3)
+    juros = [
+        Juros(jurosId=1, juros=0.02),
+        Juros(jurosId=2, juros=0.04),
+        Juros(jurosId=3, juros=0.06),
+    ]
 
-    matricula = Matricula(
-        matriculaId=1,
-        cpfSegurado=12345678900,
-        produtoId=1,
-        dataAssinatura=date(2020, 1, 1),
-        dataInicioVigencia=date(2020, 2, 1),
-        prazoCobertura=10,
-        prazoPagamento=10,
-    )
+    produto_prazo = [
+        ProdutoPrazo(produtoId=1, prazoPagamento=10, prazoCobertura=10, jurosId=1),
+        ProdutoPrazo(produtoId=1, prazoPagamento=20, prazoCobertura=20, jurosId=2),
+        ProdutoPrazo(produtoId=1, prazoPagamento=30, prazoCobertura=30, jurosId=3),
+        ProdutoPrazo(produtoId=2, prazoPagamento=15, prazoCobertura=15, jurosId=1),
+        ProdutoPrazo(produtoId=2, prazoPagamento=30, prazoCobertura=30, jurosId=3),
+    ]
+    
+
+    matricula = [
+        Matricula(
+            matriculaId=1,
+            cpfSegurado=12345678900,
+            produtoId=1,
+            dataAssinatura=date(2020, 1, 1),
+            dataInicioVigencia=date(2020, 2, 1),
+            prazoCobertura = 10,
+            prazoPagamento = 10,
+        ),
+        Matricula(
+            matriculaId=2,
+            cpfSegurado=12345678900,
+            produtoId=2,
+            dataAssinatura=date(2020, 1, 1),
+            dataInicioVigencia=date(2020, 2, 1),
+            prazoCobertura = 15,
+            prazoPagamento = 15,
+        ),
+    ]
 
     session.add(segurado)
     session.commit()
-    session.add(produto)
+    session.add_all(produtos)
     session.commit()
-    session.add_all([tabua1])
+    session.add_all(tabuas)
     session.commit()
-    session.add_all([produto_tabua1, produto_tabua2])
+    session.add_all(produto_tabua)
     session.commit()
-    session.add_all([juros1, juros2, juros3])
+    session.add_all(juros)
     session.commit()
-    session.add_all([produto_juros1, produto_juros2, produto_juros3])
+    session.add_all(produto_prazo)
     session.commit()
-    session.add(matricula)
+    session.add_all(matricula)
     session.commit()
 
-# with engine.connect() as con:
-#     con.execute(
-#         text("select dataNascimento, dataAssinatura, dataInicioVigencia, prazoCobertura ")
-#     )
+# Testar se eu consigo fazer o join de query.sql usando ORM.
